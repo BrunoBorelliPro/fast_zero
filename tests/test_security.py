@@ -5,10 +5,9 @@ from fastapi import HTTPException
 from jwt import decode
 
 from fast_zero.security import (
-    ALGORITHM,
-    SECRET_KEY,
     create_access_token,
     get_current_user,
+    settings,
 )
 
 
@@ -16,7 +15,9 @@ def test_create_access_token():
     data = {'sub': 'test@test.com'}
     token = create_access_token(data)
 
-    result = decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    result = decode(
+        token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+    )
 
     assert result['sub'] == data['sub']
     assert result['exp']
