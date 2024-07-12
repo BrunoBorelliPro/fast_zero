@@ -8,7 +8,7 @@ from fast_zero.security import (
     create_access_token,
     verify_password,
 )
-from fast_zero.types import T_OAuth2Form, T_Session
+from fast_zero.types import T_CurrentUser, T_OAuth2Form, T_Session
 
 router = APIRouter(
     prefix='/auth',
@@ -30,3 +30,11 @@ def login_for_access_token(
     access_token = create_access_token({'sub': user.email})
 
     return {'access_token': access_token, 'token_type': 'bearer'}
+
+
+@router.post('/refresh_token/')
+def refresh_access_token(
+    user: T_CurrentUser,
+):
+    new_access_token = create_access_token({'sub': user.email})
+    return {'access_token': new_access_token, 'token_type': 'bearer'}

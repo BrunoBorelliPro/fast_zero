@@ -55,12 +55,15 @@ def test_read_users(client):
     assert response.json() == {'users': []}
 
 
-def test_read_users_with_user(client, user):
+def test_read_users_with_user(client, user, other_user):
     user_schema = UserPublicSchema.model_validate(user).model_dump()
+    other_user_schema = UserPublicSchema.model_validate(
+        other_user
+    ).model_dump()
     response = client.get('/users/')
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'users': [user_schema]}
+    assert response.json() == {'users': [user_schema, other_user_schema]}
 
 
 def test_get_user(client):
@@ -96,9 +99,11 @@ def test_update_user(client, user, token):
     assert response.json().get('password') is None
 
 
-def test_update_user__user_is_not_the_owner_of_the_user(client, user, token):
+def test_update_user__user_is_not_the_owner_of_the_user(
+    client, user, other_user, token
+):
     response = client.put(
-        f'/users/{user.id + 1}',
+        f'/users/{other_user.id}',
         json={
             'email': 'email@email.com',
             'username': 'username',
@@ -111,12 +116,12 @@ def test_update_user__user_is_not_the_owner_of_the_user(client, user, token):
     assert response.json() == {'detail': 'Not enough permission'}
 
 
-def test_update_user__username_already_exists(client, user, user2, token):
+def test_update_user__username_already_exists(client, user, other_user, token):
     response = client.put(
         f'/users/{user.id}',
         json={
             'email': 'email@email.com',
-            'username': user2.username,
+            'username': other_user.username,
             'password': 'password',
         },
         headers={'Authorization': f'Bearer {token}'},
@@ -125,11 +130,11 @@ def test_update_user__username_already_exists(client, user, user2, token):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-def test_update_user__email_already_exists(client, user, user2, token):
+def test_update_user__email_already_exists(client, user, other_user, token):
     response = client.put(
         f'/users/{user.id}',
         json={
-            'email': user2.email,
+            'email': other_user.email,
             'username': 'username',
             'password': 'password',
         },
@@ -148,9 +153,11 @@ def test_delete_user(client, user, token):
     assert response.json() == {'message': 'User deleted'}
 
 
-def test_delete_user__user_is_not_the_owner_of_the_user(client, user, token):
+def test_delete_user__user_is_not_the_owner_of_the_user(
+    client, other_user, token
+):
     response = client.delete(
-        f'/users/{user.id + 1}', headers={'Authorization': f'Bearer {token}'}
+        f'/users/{other_user.id}', headers={'Authorization': f'Bearer {token}'}
     )
 
     assert response.status_code == HTTPStatus.FORBIDDEN
