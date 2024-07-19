@@ -144,6 +144,26 @@ def test_update_user__email_already_exists(client, user, other_user, token):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
+def test_update_user_just_change_username(client, user, token):
+    response = client.put(
+        f'/users/{user.id}',
+        json={
+            'username': 'username',
+            'password': user.clean_password,
+            'email': user.email,
+        },
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        'email': user.email,
+        'username': 'username',
+        'id': 1,
+    }
+    assert response.json().get('password') is None
+
+
 def test_delete_user(client, user, token):
     response = client.delete(
         f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'}

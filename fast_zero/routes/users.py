@@ -87,12 +87,12 @@ def update_user(
             detail='Not enough permission',
         )
 
-    user_with_same_username_or_email = session.scalar(
-        select(User).where(
-            (User.id != user_id) & (User.username == user.username)
-            | (User.email == user.email)
-        )
+    query = select(User).where(
+        (User.id != user_id)
+        & ((User.username == user.username) | (User.email == user.email))
     )
+
+    user_with_same_username_or_email = session.scalar(query)
 
     if user_with_same_username_or_email:
         if user_with_same_username_or_email.username == user.username:
