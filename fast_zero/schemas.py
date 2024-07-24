@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, NaiveDatetime
 
 from fast_zero.models import TodoState
 
@@ -41,6 +41,8 @@ class TodoSchema(BaseModel):
 
 class TodoPulicSchema(TodoSchema):
     id: int
+    created_at: NaiveDatetime
+    updated_at: NaiveDatetime
 
 
 class TodoListPulicSchema(BaseModel):

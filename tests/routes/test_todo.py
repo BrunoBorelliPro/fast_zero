@@ -18,12 +18,11 @@ def test_create_todo(client, token):
     )
 
     assert response.status_code == HTTPStatus.CREATED
-    assert response.json() == {
-        'title': 'title',
-        'description': 'description',
-        'state': 'todo',
-        'id': 1,
-    }
+    assert response.json().get('title') == 'title'
+    assert response.json().get('description') == 'description'
+    assert response.json().get('state') == 'todo'
+    assert response.json().get('updated_at') is not None
+    assert response.json().get('created_at') is not None
 
 
 def test_read_todos_should_return_5_todos(session, client, token, user):
@@ -387,12 +386,10 @@ def test_todo_update(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': 'new title',
-        'description': 'new description',
-        'state': 'doing',
-    }
+    assert response.json().get('title') == 'new title'
+    assert response.json().get('description') == 'new description'
+    assert response.json().get('state') == 'doing'
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_title(session, client, token, todo):
@@ -405,12 +402,10 @@ def test_todo_should_update_only_title(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': 'new title',
-        'description': todo.description,
-        'state': todo.state,
-    }
+    assert response.json().get('title') == 'new title'
+    assert response.json().get('description') == todo.description
+    assert response.json().get('state') == todo.state
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_description(session, client, token, todo):
@@ -423,12 +418,10 @@ def test_todo_should_update_only_description(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': todo.title,
-        'description': 'new description',
-        'state': todo.state,
-    }
+    assert response.json().get('title') == todo.title
+    assert response.json().get('description') == 'new description'
+    assert response.json().get('state') == todo.state
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_state(session, client, token, todo):
@@ -441,12 +434,10 @@ def test_todo_should_update_only_state(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': todo.title,
-        'description': todo.description,
-        'state': 'doing',
-    }
+    assert response.json().get('title') == todo.title
+    assert response.json().get('description') == todo.description
+    assert response.json().get('state') == 'doing'
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_update_should_no_update(session, client, token, todo):
@@ -457,12 +448,10 @@ def test_todo_update_should_no_update(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': todo.title,
-        'description': todo.description,
-        'state': todo.state,
-    }
+    assert response.json().get('title') == todo.title
+    assert response.json().get('description') == todo.description
+    assert response.json().get('state') == todo.state
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_title_and_description(
@@ -478,12 +467,10 @@ def test_todo_should_update_only_title_and_description(
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': 'new title',
-        'description': 'new description',
-        'state': todo.state,
-    }
+    assert response.json().get('title') == 'new title'
+    assert response.json().get('description') == 'new description'
+    assert response.json().get('state') == todo.state
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_title_and_state(session, client, token, todo):
@@ -497,12 +484,10 @@ def test_todo_should_update_only_title_and_state(session, client, token, todo):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': 'new title',
-        'description': todo.description,
-        'state': 'doing',
-    }
+    assert response.json().get('title') == 'new title'
+    assert response.json().get('description') == todo.description
+    assert response.json().get('state') == 'doing'
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_should_update_only_description_and_state(
@@ -518,12 +503,10 @@ def test_todo_should_update_only_description_and_state(
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': todo.id,
-        'title': todo.title,
-        'description': 'new description',
-        'state': 'doing',
-    }
+    assert response.json().get('title') == todo.title
+    assert response.json().get('description') == 'new description'
+    assert response.json().get('state') == 'doing'
+    assert response.json().get('id') == todo.id
 
 
 def test_todo_update_should_return_not_found(session, client, token):
