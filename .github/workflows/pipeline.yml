@@ -14,3 +14,5 @@ jobs:
       - name: Instalar o Poetry
         run:  pipx install poetry
       
+      - name: Instalar as dependências
+        run:  poetry install
